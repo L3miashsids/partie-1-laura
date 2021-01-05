@@ -4,8 +4,8 @@ Created on Wed Dec 30 15:08:52 2020
 
 @author: laura
 """
-#Importations
-import pandas
+
+import numpy as np
 
 #Fonction fit
 def fit(JD1):
@@ -15,7 +15,7 @@ def fit(JD1):
     #information sur le dataset
     print("\nNom et type des variables\n")
     print(JD1.dtypes)
-    
+    print(JD1.columns)
     #Dimension
     print("\nDimension\n")
     print(JD1.shape)
@@ -27,17 +27,29 @@ def fit(JD1):
     #NInformations sur les classes
     print("\nDifférentes classes\n")
     print(JD1.TYPE.unique())
+    nbcl = JD1.TYPE.unique()
     print("\nNombre de classes distinctes\n")
     print(JD1.TYPE.value_counts())
-    print("\nPourcentage de chaque classes\n")
+    print("\Fréquence de chaque classes\n")
     print(JD1.TYPE.value_counts(normalize=True))
-    
     
     #liste des colonnes
     print("\nNom des colones\n")
     print(JD1.columns)
-
-
+    
+    #Moyenne conditionnelle
+    print("\nMoyenne conditionnelle\n")
+    for i in nbcl:
+        print(i)
+        ma = np.mean(JD1.loc[JD1.TYPE==i])
+        print(ma)
+        
+    #Matrice covariance
+    print("\nMatrice covariance\n")
+    '''
+    J'arrive pas
+    '''
+    
 #Fonction predict
 def predict(JD2):
     print("\n\nFonction predict")
