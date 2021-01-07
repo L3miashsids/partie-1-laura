@@ -89,13 +89,6 @@ def fit(JD1):
         print(mc)
     
     #Mtnt il faut calculer les matrices en fonctions des objets que j'ai créé
-    print("\nMatrice de covariance par classe\n")
-    for i in nomcol:
-        X_train_classe = (JD1.loc[JD1.TYPE==i])
-        X_train_classe = X_train_classe.select_dtypes(include=["int64","float64"])
-        cov_tot = np.cov(X_train_classe.values, rowvar=False)
-        print("Matrice de la classe:",i)
-        print(cov_tot)
     
     print("\nMatrice de covariance totale\n")
     cov_tot = np.cov(X_train.values, rowvar=False)
@@ -107,19 +100,18 @@ def fit(JD1):
     print("\nMatrice de covariance intra-classes\n")
     
     
-'''
+
 #Fonction predict
-def predict(JD2):
+def predict(ad,JD2):
     print("\n\nFonction predict")
     print("\n\nPrediction\n")
     #prediction
-    pred = predict(JD2)
+    pred = ad.predict(JD2)
     print(pred)
     print("\nComptage prediciton\n")
     #comptage des prédictions
-    print(pd.Series(pred).value_counts())
- 
+    print(pandas.Series(pred).value_counts())
+'''  
 #Fonction stepdisc
 def stepdisc(?????):
-
 '''
