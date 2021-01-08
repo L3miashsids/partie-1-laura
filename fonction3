@@ -97,11 +97,11 @@ def fit(JD1,CLASS):
         X_train_classe = X_train_classe.select_dtypes(include=["int64","float64"])
         V_k = np.cov(X_train_classe.values, rowvar=False)
         print("\nMatrice de la classe:",i)
-        print(V_k)
+        print(pd.DataFrame(V_k, index=X_train.columns, columns = X_train.columns))
     
     print("\nMatrice de covariance totale\n")
     cov_tot = np.cov(X_train.values, rowvar=False)
-    print(cov_tot)
+    print(pd.DataFrame(cov_tot, index=X_train.columns, columns = X_train.columns))
     
     print("\nMatrice de covariance inter-classes\n")
 
@@ -113,7 +113,7 @@ def fit(JD1,CLASS):
     wb = (n-K)/n * W
     print(W)
     print("biaisé")
-    print(wb)
+    print(pd.DataFrame(wb, index=X_train.columns, columns = X_train.columns))
     '''
 
 #Fonction predict
