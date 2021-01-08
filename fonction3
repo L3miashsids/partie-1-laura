@@ -112,7 +112,7 @@ def fit(JD1,CLASS):
     W = W*(1/(n-K))
     wb = (n-K)/n * W
     print(W)
-    print("baisé")
+    print("biaisé")
     print(wb)
     '''
 
