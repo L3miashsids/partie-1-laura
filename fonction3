@@ -109,21 +109,38 @@ def fit(JD1,CLASS):
     r = dvic/dvt
     print(r)
     
-    #Coefficiants
-    print("\nCalcul des coefficients des variables akj\n")
-    result = np.zeros(shape=(K,p))
-        # intération des lignes de X
-        for i in range(len(mb_k)):
-            # intération des colones de Y
-            for j in range(len(invW[0])):
-                # intération des lignes de Y
-                for k in range(len(invW)):
-                    result[i][j] = result[i][j] + mb_k[i][k] * invW[k][j]
-    coef_ = np.transpose(result)
-    print(pd.DataFrame(coef_, index=X_train.columns  , columns=d_c))
+     print("\nCalcul des coefficients des variables akj\n")
     
+    coef = np.dot(mb_k, invW)
+    t_coef = np.transpose(coef)
+    print(pd.DataFrame(t_coef, index=X_train.columns  , columns=d_c))
     
+
+    print("\n#les constantes ak0\n")
+    result = np.dot(coef,np.transpose(mb_k))
+    print(result)
     
+    print("\ndiag\n")
+    diag = np.zeros(shape=(K,1))
+    for i in range (0,K):
+        a = result[i][i]
+        diag[i] = a
+    print(diag)
+    print("\nFois 0.5\n")
+    result = 0.5*diag
+    print(pd.DataFrame(result, index=d_c ))
+
+    print("\n#log\n")
+    log = np.zeros(shape=(K,1))
+    for i in range (0,K):
+         ab = m.log(pi_k[i])
+         log[i] = ab
+    print(pd.DataFrame(log, index=d_c ))
+    
+    print("\nintercept\n")
+    intercept = log - result
+    print(pd.DataFrame(intercept, index=d_c ))
+        
     
 #Fonction predict
 def predict(JD2):
