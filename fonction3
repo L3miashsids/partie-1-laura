@@ -110,7 +110,7 @@ def fit(JD1,CLASS):
     r = dvic/dvt
     print(r)
     
-     print("\nCalcul des coefficients des variables akj\n")
+    print("\nCalcul des coefficients des variables akj\n")
     
     coef = np.dot(mb_k, invW)
     t_coef = np.transpose(coef)
