@@ -131,6 +131,18 @@ def fit(JD1,CLASS):
     print(dvt)
     r = dvic/dvt
     print(r)
+    
+    print("\nCalcul des coefficients des variables akj\n")
+    result = np.zeros(shape=(K,p))
+        # intération des lignes de X
+        for i in range(len(mb_k)):
+            # intération des colones de Y
+            for j in range(len(invW[0])):
+                # intération des lignes de Y
+                for k in range(len(invW)):
+                    result[i][j] = result[i][j] + mb_k[i][k] * invW[k][j]
+    for r in result:
+        print(r)
 
 #Fonction predict
 def predict(JD2):
