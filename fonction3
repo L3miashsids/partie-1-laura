@@ -140,7 +140,8 @@ def fit(JD1,CLASS):
     
     print("\nintercept\n")
     intercept = log - result
-    print(pd.DataFrame(intercept, index=d_c ))
+    intercept = np.transpose(intercept)
+    print(pd.DataFrame(intercept, columns=d_c ))
         
     
 #Fonction predict
