@@ -119,20 +119,19 @@ def fit(JD1,CLASS):
     
 
     print("\n#les constantes ak0\n")
+    #Multiplication des matrices
     result = np.dot(coef,np.transpose(mb_k))
-    print(result)
     
-    print("\ndiag\n")
+    #diagonalisation
     diag = np.zeros(shape=(K,1))
     for i in range (0,K):
         a = result[i][i]
         diag[i] = a
-    print(diag)
-    print("\nFois 0.5\n")
-    result = 0.5*diag
-    print(pd.DataFrame(result, index=d_c ))
 
-    print("\n#log\n")
+    #Fois 0.5
+    result = 0.5*diag
+
+    #Logarithme
     log = np.zeros(shape=(K,1))
     for i in range (0,K):
          ab = m.log(pi_k[i])
