@@ -110,11 +110,12 @@ def fit(JD1,CLASS):
     r = dvic/dvt
     print(r)
     
-    print("\nCalcul des coefficients des variables akj\n")
+     print("\nCalcul des coefficients des variables akj\n")
     
     coef = np.dot(mb_k, invW)
     t_coef = np.transpose(coef)
-    print(pd.DataFrame(t_coef, index=X_train.columns  , columns=d_c))
+    t_coef = pd.DataFrame(t_coef, index=X_train.columns, columns=d_c)
+    print(t_coef)
     
 
     print("\n#les constantes ak0\n")
@@ -141,7 +142,8 @@ def fit(JD1,CLASS):
     print("\nintercept\n")
     intercept = log - result
     intercept = np.transpose(intercept)
-    print(pd.DataFrame(intercept, columns=d_c ))
+    intercept = pd.DataFrame(intercept, columns=d_c)
+    print(intercept)
         
     
 #Fonction predict
