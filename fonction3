@@ -41,7 +41,7 @@ def fit(JD1,CLASS):
     p=X_train.shape[1]
 
     print("\nVecteur cible y\n")
-    y_train=JD1.select_dtypes(include=["object"])
+    y_train=JD1[CLASS]
     print(y_train) #IDEM
     
     print("\nDifférentes classes\n")
@@ -58,30 +58,8 @@ def fit(JD1,CLASS):
     #On stocke les proportions
     pi_k=JD1[CLASS].value_counts(normalize=True)
     
-    
-    #liste des colonnes --- INUTILE POUR MOI
-    print("\nNom des colones\n")
-    print(JD1.columns)
-
-    #Apprentissage, on enlève les noms des colones --- INTERDIT car utilise adl
-    #ad.fit(X=JD1[JD1.columns[:-1]],y=JD1[CLASS])
-    
-    #Propriétés et méthodes de l'objet
-    #dir(ad)
-    
-    #Affichage --- IDEM
-    #print("\nCoefficiants\n")
-    #print(pandas.DataFrame(ad.coef_.transpose(),index=JD1.columns[:-1],columns=ad.classes_))
-    
-    #Constantes --- IDEM
-    #print("\nCoefficiants constantes\n")
-    #print(ad.intercept_)
-    
-    #De plus, je ne sais pas à quoi correspondent ces coefficiants et constantes
-    #(je les vois pas dans le bouquins du prof, pas ici en tout cas)
-    #Du coup j'ai supprimé "ad" des paramètres de la fonction
         
-    #Moyennes conditionnelles --- Il faut essayer de faire un seul tableau avec les var en colonnes
+    #Moyennes conditionnelles
     print("\nMoyennes conditionnelles\n")
         
     mb_k = np.zeros(shape=(K,p))
@@ -91,9 +69,8 @@ def fit(JD1,CLASS):
         mb_k[g] = rows.mean()
     print(pd.DataFrame(mb_k, index= d_c , columns=X_train.columns))
 
-    
-    #Mtnt il faut calculer les matrices en fonctions des objets que j'ai créé
-    print("\nMatrice de covariance par classe\n")
+    #Matrice de covariances conditionnelles
+    print("\nMatrice de covariances conditionnelles\n")
     for i in d_c :
         X_train_classe = (JD1.loc[JD1[CLASS]==i])
         X_train_classe = X_train_classe.select_dtypes(include=["int64","float64"])
@@ -101,10 +78,12 @@ def fit(JD1,CLASS):
         print("\nMatrice de la classe:",i)
         print(pd.DataFrame(V_k, index=X_train.columns, columns = X_train.columns))
     
+    #Matrice de covariance totale
     print("\nMatrice de covariance totale\n")
     cov_tot = np.cov(X_train.values, rowvar=False)
     print(pd.DataFrame(cov_tot, index=X_train.columns, columns = X_train.columns))
 
+    #Matrice de covariances intra-classes
     print("\nMatrice de covariance intra-classes\n")
     W = 0
     for i in d_c:
@@ -115,12 +94,12 @@ def fit(JD1,CLASS):
     print("biaisé")
     print(pd.DataFrame(wb, index=X_train.columns, columns = X_train.columns))
     
+    #invW
     print("\nInverse Matrice de covariance intra-classes\n")
     invW = np.linalg.inv(W)
     print(pd.DataFrame(invW, index=X_train.columns, columns = X_train.columns))
-
-    print("\nCalcul des coefficients des variables akj\n")
-        
+    
+    #Déterminant    
     print("\nDeterminant variance intra-classe\n")
     dvic = np.linalg.det(W)
     print(dvic)
@@ -130,6 +109,7 @@ def fit(JD1,CLASS):
     r = dvic/dvt
     print(r)
     
+    #Coefficiants
     print("\nCalcul des coefficients des variables akj\n")
     result = np.zeros(shape=(K,p))
         # intération des lignes de X
@@ -141,6 +121,9 @@ def fit(JD1,CLASS):
                     result[i][j] = result[i][j] + mb_k[i][k] * invW[k][j]
     coef_ = np.transpose(result)
     print(pd.DataFrame(coef_, index=X_train.columns  , columns=d_c))
+    
+    
+    
     
 #Fonction predict
 def predict(JD2):
