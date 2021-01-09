@@ -147,6 +147,7 @@ def fit(JD1,CLASS):
     
     print("\nFinal\n")
     final = (t_coef.append(intercept))
+    final = final.rename(index={0:'Constante'})
     print(final)
     
 #Fonction predict
