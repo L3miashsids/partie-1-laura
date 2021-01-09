@@ -139,8 +139,8 @@ def fit(JD1,CLASS):
                 # intération des lignes de Y
                 for k in range(len(invW)):
                     result[i][j] = result[i][j] + mb_k[i][k] * invW[k][j]
-    for r in result:
-        print(r)
+    print(result)
+    print(pd.DataFrame(result, index= d_c , columns=X_train.columns))
 
 #Fonction predict
 def predict(JD2):
