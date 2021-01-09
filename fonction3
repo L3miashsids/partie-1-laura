@@ -80,9 +80,7 @@ def fit(JD1,CLASS):
     #De plus, je ne sais pas à quoi correspondent ces coefficiants et constantes
     #(je les vois pas dans le bouquins du prof, pas ici en tout cas)
     #Du coup j'ai supprimé "ad" des paramètres de la fonction
-    
-    nomcol=JD1[CLASS].unique()
-    
+        
     #Moyennes conditionnelles --- Il faut essayer de faire un seul tableau avec les var en colonnes
     print("\nMoyennes conditionnelles\n")
         
@@ -91,12 +89,12 @@ def fit(JD1,CLASS):
     for i,rows in JD1.groupby(CLASS):
         g = g+1
         mb_k[g] = rows.mean()
-    print(pd.DataFrame(mb_k, index= nomcol, columns=X_train.columns))
+    print(pd.DataFrame(mb_k, index= d_c , columns=X_train.columns))
 
     
     #Mtnt il faut calculer les matrices en fonctions des objets que j'ai créé
     print("\nMatrice de covariance par classe\n")
-    for i in nomcol:
+    for i in d_c :
         X_train_classe = (JD1.loc[JD1[CLASS]==i])
         X_train_classe = X_train_classe.select_dtypes(include=["int64","float64"])
         V_k = np.cov(X_train_classe.values, rowvar=False)
