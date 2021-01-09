@@ -85,10 +85,14 @@ def fit(JD1,CLASS):
     
     #Moyennes conditionnelles --- Il faut essayer de faire un seul tableau avec les var en colonnes
     print("\nMoyennes conditionnelles\n")
-    for i in nomcol:
-        print(i)
-        mb_k = np.mean(JD1.loc[JD1[CLASS]==i])
-        print(mb_k)
+        
+    mb_k = np.zeros(shape=(K,p))
+    g = -1
+    for i,rows in JD1.groupby(CLASS):
+        g = g+1
+        mb_k[g] = rows.mean()
+    print(mb_k)
+
     
     #Mtnt il faut calculer les matrices en fonctions des objets que j'ai créé
     print("\nMatrice de covariance par classe\n")
