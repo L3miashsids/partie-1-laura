@@ -91,7 +91,7 @@ def fit(JD1,CLASS):
     for i,rows in JD1.groupby(CLASS):
         g = g+1
         mb_k[g] = rows.mean()
-    print(mb_k)
+    print(pd.DataFrame(mb_k, index= nomcol, columns=X_train.columns))
 
     
     #Mtnt il faut calculer les matrices en fonctions des objets que j'ai créé
@@ -113,13 +113,13 @@ def fit(JD1,CLASS):
        W = W + (n_k[i]-1)*V_k
     W = W*(1/(n-K))
     wb = (n-K)/n * W
-    print(W)
+    print(pd.DataFrame(W, index=X_train.columns, columns = X_train.columns))
     print("biaisé")
     print(pd.DataFrame(wb, index=X_train.columns, columns = X_train.columns))
     
     print("\nInverse Matrice de covariance intra-classes\n")
     invW = np.linalg.inv(W)
-    print(invW)
+    print(pd.DataFrame(invW, index=X_train.columns, columns = X_train.columns))
 
     print("\nCalcul des coefficients des variables akj\n")
         
@@ -143,7 +143,3 @@ def predict(JD2):
     #comptage des prédictions
     print(pd.Series(pred).value_counts())
  
-#Fonction stepdisc
-def stepdisc(?????):
-
-'''
