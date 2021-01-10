@@ -75,10 +75,10 @@ class ADL :
         print("\nMoyennes conditionnelles\n")
             
         mb_k = np.zeros(shape=(K,p))
-        g = -1
+        g = 0
         for i,rows in JD1.groupby(CLASS):
-            g = g+1
             mb_k[g] = rows.mean()
+            g = g+1
         print(pd.DataFrame(mb_k, index= d_c , columns=X_train.columns))
     
         #Matrice de covariances conditionnelles
