@@ -99,7 +99,8 @@ class ADL :
         print("\nMatrice de covariance intra-classes\n")
         W = 0
         for i in d_c:
-           W = W + (n_k[i]-1)*V_k
+           Vk = JD1.loc[JD1[CLASS]==i].cov()
+           W = W + (n_k[i]-1)*Vk
         W = W*(1/(n-K))
         wb = (n-K)/n * W
         print(pd.DataFrame(W, index=X_train.columns, columns = X_train.columns))
@@ -110,25 +111,13 @@ class ADL :
         print("\nInverse Matrice de covariance intra-classes\n")
         invW = np.linalg.inv(W)
         print(pd.DataFrame(invW, index=X_train.columns, columns = X_train.columns))
-        
-        #Déterminant    
-        print("\nDeterminant variance intra-classe\n")
-        dvic = np.linalg.det(W)
-        print(dvic)
-        print("\nDeterminant variance totale\n")
-        dvt = np.linalg.det(cov_tot)
-        print(dvt)
-        r = dvic/dvt
-        print(r)
-        
+                
         print("\nCalcul des coefficients des variables akj\n")
-        
         coef = np.dot(mb_k, invW)
         t_coef = np.transpose(coef)
         t_coef = pd.DataFrame(t_coef, index=X_train.columns, columns=d_c)
         print(t_coef)
         
-    
         print("\n#les constantes ak0\n")
         #Multiplication des matrices
         result = np.dot(coef,np.transpose(mb_k))
