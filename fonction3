@@ -59,7 +59,7 @@ class ADL :
         #On stocke les effectifs
         n_k=JD1[CLASS].value_counts()
         
-        print("\nRépartition des élements de la classe\n")
+        #Répartition des élements de la classe
         plt.hist(list(y_train), bins=5, align="mid")
         plt.xlabel("Elements de la classe")
         plt.ylabel("Nombres d'individus")
