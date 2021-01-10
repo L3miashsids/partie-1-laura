@@ -30,7 +30,7 @@ Classe.fit(DT, "TYPE")
 DP = pd.read_excel("Data_LDA_Python.xlsx",sheet_name="DATA_PREDICT")
 
 #PREDICT
-
+predict = f.predict(fit, DP)
 
 '''
 stepdisc = f.stepdisc(???)
