@@ -148,9 +148,8 @@ class ADL :
         final = (t_coef.append(intercept))
         final = final.rename(index={0:'Constante'})
         print(final)
+        return(final)
         
-        
-    return(final)
     #Fonction predict
     def predict(a, JD2):
         print("\n\nFonction predict")
