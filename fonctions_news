@@ -29,12 +29,19 @@ class ADL :
         print(JD1.shape)
         #On stocke le nombre d'observations n
         n=JD1.shape[0]
+        print("\nDDL Total\n")
+        print(n-1)
         
         #NInformations sur les classes
         print("\nNombre de classes\n")
         print(JD1[CLASS].nunique())
         #On stocke la valeur K = nombre de modalités
         K=JD1[CLASS].nunique()
+        
+        print("\nDDL dans les classes\n")
+        print(n-K)
+        print("\nDDL entre les classes\n")
+        print(K-1)
         
         #Affichage des variables explicatives et de la variable catégorielle
         print("\nMatrice des descripteurs X\n")
@@ -148,11 +155,8 @@ class ADL :
         final = (t_coef.append(intercept))
         final = final.rename(index={0:'Constante'})
         print(final)
-        
         return(final)
-        
-     
-           
+                 
 #Fonction predict
 def predict(a, JD2):
     print("\n\nFonction predict")
@@ -185,7 +189,7 @@ def predict(a, JD2):
     
     #Calcul des scores en test
     print("\n Reprise des coeficients et des constantes\n")
-    constante= a[-1:]
+    constante = a[-1:]
     print(constante)
     coef= a[:p]
     print(coef)
@@ -199,10 +203,6 @@ def predict(a, JD2):
     constantemat=np.array(constante)#Ajout des constantes
     scores = scores + constantemat
     print(pd.DataFrame(scores))
-    
-    
-    
-    
     
     print("\n Identification du maximum pour chaque ligne\n")
     nbligne=scores.shape[0]
