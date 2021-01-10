@@ -151,43 +151,49 @@ class ADL :
         
         
     return(final)
-#Fonction predict def predict(a, JD2): print("\n\nFonction predict") print("\n\nPrediction\n") #information sur le dataset test print("\nNom et type des variables\n") print(JD2.dtypes)
+    #Fonction predict
+    def predict(a, JD2):
+        print("\n\nFonction predict")
+        print("\n\nPrediction\n")
+        #information sur le dataset test
+        print("\nNom et type des variables\n")
+        print(JD2.dtypes)
 
-#Dimension
-print("\nDimension\n")
-print(JD2.shape)
-
-
-#On stocke le nombre d'observations n
-n=JD2.shape[0]
-
-
-#affichage des premières valeurs
-print("\nAffichage des premières valeurs\n")
-print(JD2.head(5))
-
-#Affichage des variables explicatives
-print("\nMatrice des descripteurs X\n")
-X_test=JD2.select_dtypes(include=["int64","float64"])
-print(X_test) #J'affiche pour vérif mais on l'enlevera
-
- #On stocke le nombre de variables explicatives 
-p=X_test.shape[1]
+        #Dimension
+        print("\nDimension\n")
+        print(JD2.shape)
 
 
-#Calcul des scores en test
-print("\n Reprise des coeficients et des constantes\n")
-constante= a[-1:]
-print(constante)
-coef= a[:p]
-print(coef)
+        #On stocke le nombre d'observations n
+        n=JD2.shape[0]
 
 
-print("\n Calcul des scores\n")
+        #affichage des premières valeurs
+        print("\nAffichage des premières valeurs\n")
+        print(JD2.head(5))
 
-Xtestmat = np.array(X_test)
-scores = np.dot(Xtestmat, coef)#multiplication par coeficients
-scores = pd.DataFrame(scores, columns=(coef.columns))
-constantemat=np.array(constante)#Ajout des constantes
-scores = scores + constantemat
-print(pd.DataFrame(scores))
+        #Affichage des variables explicatives
+        print("\nMatrice des descripteurs X\n")
+        X_test=JD2.select_dtypes(include=["int64","float64"])
+        print(X_test) #J'affiche pour vérif mais on l'enlevera
+
+         #On stocke le nombre de variables explicatives 
+        p=X_test.shape[1]
+
+
+        #Calcul des scores en test
+        print("\n Reprise des coeficients et des constantes\n")
+        constante= a[-1:]
+        print(constante)
+        coef= a[:p]
+        print(coef)
+
+
+        print("\n Calcul des scores\n")
+
+        Xtestmat = np.array(X_test)
+        scores = np.dot(Xtestmat, coef)#multiplication par coeficients
+        scores = pd.DataFrame(scores, columns=(coef.columns))
+        constantemat=np.array(constante)#Ajout des constantes
+        scores = scores + constantemat
+        print(pd.DataFrame(scores))
