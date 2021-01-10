@@ -144,7 +144,7 @@ class ADL :
         intercept = pd.DataFrame(intercept, columns=d_c)
         print(intercept)
         
-        print("\nFinal\n")
+        print("\nClassification fonctions\n")
         final = (t_coef.append(intercept))
         final = final.rename(index={0:'Constante'})
         print(final)
