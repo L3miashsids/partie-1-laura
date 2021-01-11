@@ -345,7 +345,7 @@ def HTML():
                                     <td>51</td>
                                 </tr>
                                 <tr>
-                                    <th class="bg-info">Variable</th>
+                                    <th class="bg-info">Variables</th>
                                     <td>8</td>
                                     <th class="bg-info">DDL dans les classes</th>
                                     <td>49</td>
@@ -401,7 +401,7 @@ def HTML():
                                 </tr>
                             <table class="table table-bordered">
                                 <tr>
-                                    <th class="bg-info">Range de la matrice de covariance</th>
+                                    <th class="bg-info">Rang de la matrice de covariance</th>
                                     <th class="bg-info">Log naturel du determinant de la matrice de covariance</th>
                                 </tr>
                                 <tr>
@@ -1010,7 +1010,7 @@ def HTML():
                                 </table>
                                 <br />
                                 <tr>
-                                <h2 class="bg-info">Matrice de covariance intra-classe biaisé</h2>
+                                <h2 class="bg-info">Matrice de covariance intra-classe biaisée</h2>
                                 </tr>
                                 <table border="1" class="dataframe">
                                   <thead>
@@ -1119,7 +1119,7 @@ def HTML():
                                 </table>
                                 <br />
                                 <tr>
-                                <h2 class="bg-info">Inverse Matrice de covariance intra-classes</h2>
+                                <h2 class="bg-info">Inverse Matrice de covariance intra-classe</h2>
                                 </tr>
                                 <table border="1" class="dataframe">
                                       <thead>
@@ -1654,13 +1654,13 @@ def HTML():
                                         <tr>
                                         <th class="bg-info">Niveau des classes</th>
                                         <td>3</td>
-                                        <th class="bg-info">Une ou des variables seront inclusesDDL dans les classes</th>
+                                        <th class="bg-info">Une ou des variables seront incluses</th>
                                         <td>0</td>
                                     </tr>
                                     <tr>
                                         <th class="bg-info"></th>
                                         <td></td>
-                                        <th class="bg-info">Niveau de signicativité</th>
+                                        <th class="bg-info">Niveau de significativité</th>
                                         <td>0.001</td>
                                     </tr>
                                 </table>
@@ -1699,10 +1699,3 @@ def HTML():
                                     </tr>
                             </table>
                             </div>
-                    </div>
-                </br>
-        </html>
-"""
-    with open("file.html", "w") as file:
-        file.write(html_content)
-    
