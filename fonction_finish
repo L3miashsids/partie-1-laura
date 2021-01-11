@@ -1,0 +1,358 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Dec 30 15:08:52 2020
+
+@author: laura
+"""
+#Importations
+import pandas as pd
+import numpy as np
+import math as m
+import matplotlib.pyplot as plt
+import spicy
+
+
+class ADL :
+    
+    
+    #Fonction fit
+    def fit(self, JD1,CLASS):
+        print("\n\nFonction fit")
+        print("\nInformations de Base\n")
+        
+        #information sur le dataset
+        print("\nNom et type des variables\n")
+        print(JD1.dtypes)
+        
+        #Dimension
+        print("\nDimension\n")
+        print(JD1.shape)
+        #On stocke le nombre d'observations n
+        self.n=JD1.shape[0]
+        print("\nDDL Total\n")
+        DDL = self.n-1
+        print(DDL)
+        
+        #NInformations sur les classes
+        print("\nNombre de classes\n")
+        print(JD1[CLASS].nunique())
+        #On stocke la valeur K = nombre de modalités
+        K=JD1[CLASS].nunique()
+        
+        print("\nDDL dans les classes\n")
+        DDLC = self.n-K
+        print(DDLC)
+        print("\nDDL entre les classes\n")
+        DDLEC = K-1
+        print(DDLEC)
+        
+        #Affichage des variables explicatives et de la variable catégorielle
+        print("\nMatrice des descripteurs X\n")
+        X_train=JD1.select_dtypes(include=["int64","float64"])
+        print(X_train) #J'affiche pour vérif mais on l'enlevera
+        
+        print("\nNombre de variables explicatives\n")
+        print(X_train.shape[1])
+        #On stocke le nombre d'explicatives
+        p=X_train.shape[1]
+    
+        print("\nVecteur cible y\n")
+        y_train=JD1[CLASS]
+        print(y_train) #IDEM
+        
+        print("\nDifférentes classes\n")
+        d_c = JD1[CLASS].unique()
+        print(d_c)
+        
+        print("\nEffectif par classe\n")
+        print(JD1[CLASS].value_counts())
+        #On stocke les effectifs
+        n_k=JD1[CLASS].value_counts()
+        
+        #Répartition des élements de la classe
+        plt.hist(list(y_train), bins=5, align="mid")
+        plt.xlabel("Elements de la classe")
+        plt.ylabel("Nombres d'individus")
+        plt.title("Répartition des élements de la classe ")
+    
+        print("\nProportion par classe\n")
+        print(JD1[CLASS].value_counts(normalize=True))
+        #On stocke les proportions
+        pi_k=JD1[CLASS].value_counts(normalize=True)
+        
+            
+        #Moyennes conditionnelles
+        print("\nMoyennes conditionnelles\n")
+            
+        mb_k = np.zeros(shape=(K,p))
+        g = 0
+        for i,rows in JD1.groupby(CLASS):
+            mb_k[g] = rows.mean()
+            g = g+1
+        print(pd.DataFrame(mb_k, index= d_c , columns=X_train.columns))
+        
+        #Matrice de covariances conditionnelles
+        print("\nMatrice de covariances conditionnelles\n")
+        for i in d_c :
+            X_train_classe = (JD1.loc[JD1[CLASS]==i])
+            X_train_classe = X_train_classe.select_dtypes(include=["int64","float64"])
+            V_k = np.cov(X_train_classe.values, rowvar=False)
+            print("\nMatrice de la classe:",i)
+            print(pd.DataFrame(V_k, index=X_train.columns, columns = X_train.columns))
+    
+        #Matrice de covariance totale
+        print("\nMatrice de covariance totale\n")
+        cov_tot = np.cov(X_train.values, rowvar=False)
+        print(pd.DataFrame(cov_tot, index=X_train.columns, columns = X_train.columns))
+    
+        #Matrice de covariances intra-classes
+        print("\nMatrice de covariance intra-classes\n")
+        W = 0
+        for i in d_c:
+           Vk = JD1.loc[JD1[CLASS]==i].cov()
+           W = W + (n_k[i]-1)*Vk
+        W = W*(1/(self.n-K))
+        wb = (self.n-K)/self.n * W
+        print(pd.DataFrame(W, index=X_train.columns, columns = X_train.columns))
+        print("biaisé")
+        print(pd.DataFrame(wb, index=X_train.columns, columns = X_train.columns))
+        
+        #invW
+        print("\nInverse Matrice de covariance intra-classes\n")
+        invW = np.linalg.inv(W)
+        print(pd.DataFrame(invW, index=X_train.columns, columns = X_train.columns))
+                
+        print("\nCalcul des coefficients des variables akj\n")
+        coef = np.dot(mb_k, invW)
+        t_coef = np.transpose(coef)
+        t_coef = pd.DataFrame(t_coef, index=X_train.columns, columns=d_c)
+        print(t_coef)
+        
+        print("\n#les constantes ak0\n")
+        #Multiplication des matrices
+        result = np.dot(coef,np.transpose(mb_k))
+        
+        #diagonalisation
+        diag = np.zeros(shape=(K,1))
+        for i in range (0,K):
+            a = result[i][i]
+            diag[i] = a
+    
+        #Fois 0.5
+        result = 0.5*diag
+    
+        #Logarithme
+        log = np.zeros(shape=(K,1))
+        for i in range (0,K):
+             ab = m.log(pi_k[i])
+             log[i] = ab
+        print(pd.DataFrame(log, index=d_c ))
+        
+        print("\nintercept\n")
+        intercept = log - result
+        intercept = np.transpose(intercept)
+        intercept = pd.DataFrame(intercept, columns=d_c)
+        print(intercept)
+        
+        print("\nClassification fonctions\n")
+        final = (t_coef.append(intercept))
+        final = final.rename(index={0:'Constante'})
+        print(final)
+        return(final)
+    
+    #Fonction stepdisc
+    def stepdisc(self, JD1, CLASS, slentry=0.01):
+        
+        X_train = JD1.select_dtypes(include=["int64","float64"])
+
+        #On stocke le nombre d'explicatives
+        n = JD1.shape[0]
+        K = JD1[CLASS].nunique()
+        p = X_train.shape[1]
+        d_c = JD1[CLASS].unique()
+        n_k = JD1[CLASS].value_counts()
+
+        LWP = 1
+        J = 1
+        
+        LW_vec = np.zeros(shape = (p, 1))
+        R2_vec = np.zeros(shape = (p, 1))
+        F_vec = np.zeros(shape = (p, 1))
+        Pv_vec = np.zeros(shape = (p, 1))
+        
+        Out_Vars_inds = list(np.arange(0,len(JD1.columns),1))
+        
+        #Matrice de covariances conditionnelles
+        print("\nMatrice de covariances conditionnelles\n")
+        for i in d_c :
+            X_train_classe = (JD1.loc[JD1[CLASS]==i])
+            X_train_classe = X_train_classe.select_dtypes(include=["int64","float64"])
+            V_k = np.cov(X_train_classe.values, rowvar=False)
+            print("\nMatrice de la classe:",i)
+            print(pd.DataFrame(V_k, index=X_train.columns, columns = X_train.columns))
+        
+        #Matrice de covariance totale
+        print("\nMatrice de covariance totale\n")
+        cov_tot = np.cov(X_train.values, rowvar=False)
+        print(pd.DataFrame(cov_tot, index=X_train.columns, columns = X_train.columns))
+    
+        #Matrice de covariances intra-classes
+        print("\nMatrice de covariance intra-classes\n")
+        W = 0
+        for i in d_c:
+           W = W + (n_k[i]-1)*V_k
+        W = W*(1/(n-K))
+        wb = (n-K)/n * W
+        print(pd.DataFrame(W, index=X_train.columns, columns = X_train.columns))
+        print("biaisé")
+        print(pd.DataFrame(wb, index=X_train.columns, columns = X_train.columns))
+        
+        for id_var, Nom_var in enumerate(JD1.columns) : 
+            #Calcul du lambda de Wilks, R2, F, PV
+            LW = wb[id_var,id_var]/wb[id_var,id_var]
+            LW_vec[id_var] = LW
+            R2_vec[id_var] = (LWP-LW)/LWP
+            F = (LWP/LW-1)*(n-K-J+1)/(K-1)
+            F_vec[id_var] = F
+            Pv_vec[id_var] = 1-scipy.stats.f.cdf(F,K-1,n-K-J+1)
+            
+        #Affichage du tableau de selection des variable
+        Table_Out_Step = pd.concat([pd.DataFrame(R2_vec), 
+                                    pd.DataFrame(F_vec),
+                                    pd.DataFrame(Pv_vec)],
+                                   axis=1)
+        Table_Out_Step_rownames = pd.DataFrame(JD1.columns)        
+        Table_Out_Step = pd.concat([Table_Out_Step_rownames, Table_Out_Step], axis=1)
+        Table_Out_Step.columns = ["Variables","R2","F","p-value"]
+        print("Selection de Variable a l'etape ",J," : \n", Table_Out_Step.round(5))
+ 
+        #Test si on ajoute une variable ou pas (p-value < slentry)
+        if any(np.asarray([i for b in map(lambda x:[x] if not isinstance(x, list) else x, Pv_vec.tolist()) for i in b])[Out_Vars_inds] < slentry):
+            
+            ##Initialisation des variables selectionnees
+            #Ids des vars dans le modele
+            varin_ids = np.asarray(R2_vec.argmax())
+            R2_Select = list(R2_vec[varin_ids])
+            LW_Select = list(LW_vec[varin_ids])
+            F_Select = list(F_vec[varin_ids])
+            PV_Select = list(Pv_vec[varin_ids])
+            
+            #Actualisation des variables non selectionnee
+            Out_Vars_inds.remove(varin_ids)
+            LW_last = LW_vec[varin_ids]
+            In_Vars = [JD1.columns[varin_ids]]
+            
+            ##Affichage du tableau recapitulatif du modele
+            Table_In_Step = pd.concat([pd.DataFrame(R2_Select), 
+                                      pd.DataFrame(LW_Select),
+                                      pd.DataFrame(F_Select),
+                                      pd.DataFrame(PV_Select)],
+                                     axis=1)
+            Table_In_Step_rownames = pd.DataFrame(In_Vars)            
+            Table_In_Step = pd.concat([Table_In_Step_rownames, Table_In_Step], axis=1)
+            Table_In_Step.columns = ["Variables","R2","LW","F","p-value"]
+            print("Infos sur les vars selectionnees a l'etape ",J," : \n", Table_In_Step.round(5))
+        
+        else:
+            print("Aucune variable n'est selectionnee.")
+            
+        #P-value des variables en dehors du modele
+        Pv_vec = np.asarray([i for b in map(lambda x:[x] if not isinstance(x, list) else x, Pv_vec.tolist()) for i in b])
+        Pv_vec = Pv_vec[Out_Vars_inds]
+        
+    
+#Fonction predict
+def predict(a, JD2):
+    print("\n\nFonction predict")
+    print("\n\nPrediction\n")
+     #information sur le dataset test
+    print("\nNom et type des variables\n")
+    print(JD2.dtypes)
+    
+    #Dimension
+    print("\nDimension\n")
+    print(JD2.shape)
+    
+    
+    #On stocke le nombre d'observations n
+    n=JD2.shape[0]
+    
+    
+    #affichage des premières valeurs
+    print("\nAffichage des premières valeurs\n")
+    print(JD2.head(5))
+    
+    #Affichage des variables explicatives
+    print("\nMatrice des descripteurs X\n")
+    X_test=JD2.select_dtypes(include=["int64","float64"])
+    print(X_test) #J'affiche pour vérif mais on l'enlevera
+    
+     #On stocke le nombre de variables explicatives 
+    p=X_test.shape[1]
+    
+    
+    #Calcul des scores en test
+    print("\n Reprise des coeficients et des constantes\n")
+    constante = a[-1:]
+    print(constante)
+    coef= a[:p]
+    print(coef)
+    
+    
+    print("\n Calcul des scores\n")
+    
+    Xtestmat = np.array(X_test)
+    scores = np.dot(Xtestmat, coef)#multiplication par coeficients
+    print(scores)
+    scores = pd.DataFrame(scores, columns=(coef.columns))
+    print(scores)
+    constantemat=np.array(constante)#Ajout des constantes
+    print(constantemat)
+    scores = scores + constantemat
+    print(pd.DataFrame(scores))
+    
+    print("\n Identification du maximum pour chaque ligne\n")
+    scores_arg=scores.idxmax(axis=1)#prend la colonne de ce maximum
+    pred=scores_arg.tolist()
+    print(pred)
+    
+
+
+def HTML():
+    html_content = """
+    <html>
+        <head>
+            <link href="bootstrop.css" rel="stylesheet">
+        </head>
+            <body>
+                <br>
+                <h1 class="text-center">Fonction fit()</h1>
+                <div class="container">
+                    <div class="row justify-content-md-center">
+                        <div class='col-8'>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th class="bg-info">Taille d'échantillon totale</th>
+                                    <td>52</td>
+                                    <th class="bg-info">Total DDL</th>
+                                    <td>51</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-info">Variable</th>
+                                    <td>8</td>
+                                    <th class="bg-info">DDL dans les classes</th>
+                                    <td>49</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-info">Classes</th>
+                                    <td>3</td>
+                                    <th class="bg-info">DDL entre les classes</th>
+                                    <td>2</td>
+                            </tr>
+                        </div>
+                    </div>
+                </br>
+        </html>
+"""
+    with open("file.html", "w") as file:
+        file.write(html_content)
