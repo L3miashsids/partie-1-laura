@@ -7,7 +7,7 @@ Created on Wed Dec 30 14:26:39 2020
 #Importations
 import os
 import pandas as pd
-import fonctions4 as f
+import fonctions as f
 
 
 #Chargement du dossier
@@ -26,9 +26,9 @@ DP = pd.read_excel("Data_LDA_Python.xlsx",sheet_name="DATA_PREDICT")
 
 #PREDICT
 predict = Classe.predict(fit, DP)
-
+'''
 #STEPDISC
 Classe.stepdisc(DT, "TYPE")
-
+'''
 #HTML
-htlm = f.HTML()
+htlm = Classe.HTML()
