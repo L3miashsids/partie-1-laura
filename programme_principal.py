@@ -24,7 +24,7 @@ import numpy as np
 Classe=f.ADL()
 
 #FIT
-Classe.fit(DT, "TYPE")
+fit= Classe.fit(DT, "TYPE")
 
 #Chargement seconde feuille --- Données PREDICT
 DP = pd.read_excel("Data_LDA_Python.xlsx",sheet_name="DATA_PREDICT")
