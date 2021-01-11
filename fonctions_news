@@ -170,28 +170,24 @@ def predict(a, JD2):
     print(JD2.shape)
     
     
-    #On stocke le nombre d'observations n
-    n=JD2.shape[0]
-    
-    
     #affichage des premières valeurs
     print("\nAffichage des premières valeurs\n")
     print(JD2.head(5))
     
     #Affichage des variables explicatives
-    print("\nMatrice des descripteurs X\n")
+    print("\nMatrice des descripteurs Y\n")
     X_test=JD2.select_dtypes(include=["int64","float64"])
     print(X_test) #J'affiche pour vérif mais on l'enlevera
     
      #On stocke le nombre de variables explicatives 
-    p=X_test.shape[1]
+    pp=X_test.shape[1]
     
     
     #Calcul des scores en test
     print("\n Reprise des coeficients et des constantes\n")
-    constante = a[-1:]
+    constante= a[-1:]#selection de la derniere ligne de a
     print(constante)
-    coef= a[:p]
+    coef= a[:pp]#selection des pp premières ligne de a
     print(coef)
     
     
@@ -200,22 +196,15 @@ def predict(a, JD2):
     Xtestmat = np.array(X_test)
     scores = np.dot(Xtestmat, coef)#multiplication par coeficients
     scores = pd.DataFrame(scores, columns=(coef.columns))
-    constantemat=np.array(constante)#Ajout des constantes
-    scores = scores + constantemat
+    constantemat=np.array(constante)
+    scores = scores + constantemat#Ajout des constantes
     print(pd.DataFrame(scores))
+     
     
-    print("\n Identification du maximum pour chaque ligne\n")
-    nbligne=scores.shape[0]
-    print(nbligne)
+    print("\n Identification du maximum pour chaque ligne pour la prédiction\n")
     
-    #if scores.columns is scores.max(axis=1):
-        #maximum = scores.columns
-    
-    #print(maximum)
-   
-    scores = np.array(scores)
-    scores_max=scores.max(axis=1)
-    scores_arg=scores.argmax(axis=1)
-    scores_arg=scores_arg.tolist() 
-    print(scores_arg)
+    scores_max=scores.max(axis=1)#prend le score maximum par ligne
+    scores_arg=scores.idxmax(axis=1)#prend la colonne de ce maximum
+    pred=scores_arg.tolist()
+    print(pred)
     
