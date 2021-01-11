@@ -11,7 +11,6 @@ import math as m
 import matplotlib.pyplot as plt
 import scipy
 
-
 class ADL :
     
     
@@ -91,19 +90,21 @@ class ADL :
             g = g+1
         print(pd.DataFrame(mb_k, index= d_c , columns=X_train.columns))
         
+        
         #Matrice de covariances conditionnelles
         print("\nMatrice de covariances conditionnelles\n")
         for i in d_c :
-            X_train_classe = (JD1.loc[JD1[CLASS]==i])
+            X_train_classe = (JD1.loc[JD1[CLASS]=="POIRE"])
             X_train_classe = X_train_classe.select_dtypes(include=["int64","float64"])
             V_k = np.cov(X_train_classe.values, rowvar=False)
             print("\nMatrice de la classe:",i)
             print(pd.DataFrame(V_k, index=X_train.columns, columns = X_train.columns))
-    
+            
         #Matrice de covariance totale
         print("\nMatrice de covariance totale\n")
         cov_tot = np.cov(X_train.values, rowvar=False)
         print(pd.DataFrame(cov_tot, index=X_train.columns, columns = X_train.columns))
+        
     
         #Matrice de covariances intra-classes
         print("\nMatrice de covariance intra-classes\n")
@@ -116,12 +117,13 @@ class ADL :
         print(pd.DataFrame(W, index=X_train.columns, columns = X_train.columns))
         print("biaisé")
         print(pd.DataFrame(wb, index=X_train.columns, columns = X_train.columns))
-        
+       
         #invW
         print("\nInverse Matrice de covariance intra-classes\n")
         invW = np.linalg.inv(W)
         print(pd.DataFrame(invW, index=X_train.columns, columns = X_train.columns))
-                
+        
+        
         print("\nCalcul des coefficients des variables akj\n")
         coef = np.dot(mb_k, invW)
         t_coef = np.transpose(coef)
@@ -159,7 +161,7 @@ class ADL :
         final = final.rename(index={0:'Constante'})
         print(final)
         return(final)
-    
+   
     #Fonction stepdisc
     def stepdisc(self, JD1, CLASS, slentry=0.01):
         
@@ -206,7 +208,7 @@ class ADL :
         print(pd.DataFrame(W, index=X_train.columns, columns = X_train.columns))
         print("biaisé")
         print(pd.DataFrame(wb, index=X_train.columns, columns = X_train.columns))
-        
+'''       
         for id_var, Nom_var in enumerate(JD1.columns) : 
             #Calcul du lambda de Wilks, R2, F, PV
             LW = wb[id_var,id_var]/wb[id_var,id_var]
@@ -259,8 +261,8 @@ class ADL :
         #P-value des variables en dehors du modele
         Pv_vec = np.asarray([i for b in map(lambda x:[x] if not isinstance(x, list) else x, Pv_vec.tolist()) for i in b])
         Pv_vec = Pv_vec[Out_Vars_inds]
-        
-    
+     
+
 #Fonction predict
 def predict(a, JD2):
     print("\n\nFonction predict")
@@ -311,12 +313,12 @@ def predict(a, JD2):
     scores = scores + constantemat
     print(pd.DataFrame(scores))
     
+    
     print("\n Identification du maximum pour chaque ligne\n")
     scores_arg=scores.idxmax(axis=1)#prend la colonne de ce maximum
     pred=scores_arg.tolist()
     print(pred)
-    
-
+'''
 
 def HTML():
     html_content = """
@@ -327,11 +329,16 @@ def HTML():
             <body>
                 <br>
                 <h1 class="text-center">Fonction fit()</h1>
+                <br />
                 <div class="container">
                     <div class="row justify-content-md-center">
                         <div class='col-8'>
                             <table class="table table-bordered">
                                 <tr>
+                                <tr>
+                                    <h2 class="bg-info">Information de base : </h2>
+                                    </tr>
+                                    
                                     <th class="bg-info">Taille d'échantillon totale</th>
                                     <td>52</td>
                                     <th class="bg-info">Total DDL</th>
@@ -348,11 +355,1354 @@ def HTML():
                                     <td>3</td>
                                     <th class="bg-info">DDL entre les classes</th>
                                     <td>2</td>
-                            </tr>
+                            </table>
+                            <br />
+
+                                <tr>
+                                <h2 class="bg-info">Information au niveau des classes : </h2>
+                                </tr>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th class="bg-info">Type</th>
+                                    <th class="bg-info">Nom de la variable</th>
+                                    <th class="bg-info">Fréquence</th>
+                                    <th class="bg-info">Poids</th>
+                                    <th class="bg-info">Proportion</th>
+                                    <th class="bg-info">Proportion à priori</th>
+                                </tr>
+                                <tr>
+                                    <th class="bg-info">KIRSCH</th>
+                                    <th class="bg-info">KIRSCH</th>
+                                    <th class="bg-info">17</th>
+                                    <th class="bg-info">17.000</th>
+                                    <th class="bg-info">0.326923</th>
+                                    <th class="bg-info">0.326923</th>
+                                </tr>
+                                <tr>
+                                    <th class="bg-info">MIRAB</th>
+                                    <th class="bg-info">MIRAB</th>
+                                    <th class="bg-info">15</th>
+                                    <th class="bg-info">15.000</th>
+                                    <th class="bg-info">0.288462</th>
+                                    <th class="bg-info">0.288462</th>
+                                </tr>
+                                <tr>
+                                    <th class="bg-info">POIRE</th>
+                                    <th class="bg-info">POIRE</th>
+                                    <th class="bg-info">20</th>
+                                    <th class="bg-info">20.000</th>
+                                    <th class="bg-info">0.384615</th>
+                                    <th class="bg-info">0.384615</th>
+                                </tr>
+                            </table>
+                            <br />
+                                <tr>
+                                <h2 class="bg-info">Information sur la matrice de covariance combiné : </h2>
+                                </tr>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th class="bg-info">Range de la matrice de covariance</th>
+                                    <th class="bg-info">Log naturel du determinant de la matrice de covariance</th>
+                                </tr>
+                                <tr>
+                                    <th class="bg-info">8</th>
+                                    <th class="bg-info">58.32574</th>
+                                </tr>
+                            </table>
+                            <br />
+                                <tr>
+                                <h2 class="bg-info">Moyenne conditionelle</h2>
+                                </tr>
+                            <table border="1" class="dataframe">
+                                  <thead>
+                                    <tr style="text-align: right;">
+                                      <th></th>
+                                      <th>MEOH</th>
+                                      <th>ACET</th>
+                                      <th>BU1</th>
+                                      <th>BU2</th>
+                                      <th>ISOP</th>
+                                      <th>MEPR</th>
+                                      <th>PRO1</th>
+                                      <th>ACAL</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th>KIRSCH</th>
+                                      <td>371.676471</td>
+                                      <td>203.017647</td>
+                                      <td>1.20</td>
+                                      <td>21.017647</td>
+                                      <td>81.588235</td>
+                                      <td>28.894118</td>
+                                      <td>790.770588</td>
+                                      <td>12.011765</td>
+                                    </tr>
+                                    <tr>
+                                      <th>MIRAB</th>
+                                      <td>934.200000</td>
+                                      <td>235.066667</td>
+                                      <td>20.20</td>
+                                      <td>13.566667</td>
+                                      <td>90.933333</td>
+                                      <td>29.400000</td>
+                                      <td>195.266667</td>
+                                      <td>12.353333</td>
+                                    </tr>
+                                    <tr>
+                                      <th>POIRE</th>
+                                      <td>1084.350000</td>
+                                      <td>185.250000</td>
+                                      <td>21.33</td>
+                                      <td>49.380000</td>
+                                      <td>118.050000</td>
+                                      <td>50.000000</td>
+                                      <td>317.400000</td>
+                                      <td>14.495000</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <br />
+                                <tr>
+                                <h2 class="bg-info">Matrice de covariance de la classe KIRSCH</h2>
+                                </tr>
+                                <table border="1" class="dataframe">
+                                  <thead>
+                                    <tr style="text-align: right;">
+                                      <th></th>
+                                      <th>MEOH</th>
+                                      <th>ACET</th>
+                                      <th>BU1</th>
+                                      <th>BU2</th>
+                                      <th>ISOP</th>
+                                      <th>MEPR</th>
+                                      <th>PRO1</th>
+                                      <th>ACAL</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th>MEOH</th>
+                                      <td>34259.654412</td>
+                                      <td>11295.734191</td>
+                                      <td>63.556250</td>
+                                      <td>2044.777941</td>
+                                      <td>5676.952206</td>
+                                      <td>1755.313603</td>
+                                      <td>67355.330515</td>
+                                      <td>1198.613419</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACET</th>
+                                      <td>11295.734191</td>
+                                      <td>14266.467794</td>
+                                      <td>17.725000</td>
+                                      <td>784.245294</td>
+                                      <td>2728.963971</td>
+                                      <td>854.786985</td>
+                                      <td>31507.793676</td>
+                                      <td>347.592904</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU1</th>
+                                      <td>63.556250</td>
+                                      <td>17.725000</td>
+                                      <td>0.616250</td>
+                                      <td>3.604375</td>
+                                      <td>4.081250</td>
+                                      <td>2.918750</td>
+                                      <td>176.537500</td>
+                                      <td>3.123750</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU2</th>
+                                      <td>2044.777941</td>
+                                      <td>784.245294</td>
+                                      <td>3.604375</td>
+                                      <td>461.584044</td>
+                                      <td>191.376471</td>
+                                      <td>109.921985</td>
+                                      <td>14519.423676</td>
+                                      <td>77.290404</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ISOP</th>
+                                      <td>5676.952206</td>
+                                      <td>2728.963971</td>
+                                      <td>4.081250</td>
+                                      <td>191.376471</td>
+                                      <td>1543.632353</td>
+                                      <td>424.028676</td>
+                                      <td>5333.718382</td>
+                                      <td>142.386397</td>
+                                    </tr>
+                                    <tr>
+                                      <th>MEPR</th>
+                                      <td>1755.313603</td>
+                                      <td>854.786985</td>
+                                      <td>2.918750</td>
+                                      <td>109.921985</td>
+                                      <td>424.028676</td>
+                                      <td>150.840588</td>
+                                      <td>3019.769191</td>
+                                      <td>40.161324</td>
+                                    </tr>
+                                    <tr>
+                                      <th>PRO1</th>
+                                      <td>67355.330515</td>
+                                      <td>31507.793676</td>
+                                      <td>176.537500</td>
+                                      <td>14519.423676</td>
+                                      <td>5333.718382</td>
+                                      <td>3019.769191</td>
+                                      <td>563401.932206</td>
+                                      <td>2659.623493</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACAL</th>
+                                      <td>1198.613419</td>
+                                      <td>347.592904</td>
+                                      <td>3.123750</td>
+                                      <td>77.290404</td>
+                                      <td>142.386397</td>
+                                      <td>40.161324</td>
+                                      <td>2659.623493</td>
+                                      <td>94.126103</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <br />
+                                    <tr>
+                                    <h2 class="bg-info">Matrice de covariance de la classe MIRAB</h2>
+                                    </tr>
+                                <table border="1" class="dataframe">
+                                  <thead>
+                                    <tr style="text-align: right;">
+                                      <th></th>
+                                      <th>MEOH</th>
+                                      <th>ACET</th>
+                                      <th>BU1</th>
+                                      <th>BU2</th>
+                                      <th>ISOP</th>
+                                      <th>MEPR</th>
+                                      <th>PRO1</th>
+                                      <th>ACAL</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th>MEOH</th>
+                                      <td>22953.171429</td>
+                                      <td>2391.200000</td>
+                                      <td>188.171429</td>
+                                      <td>448.928571</td>
+                                      <td>-825.700000</td>
+                                      <td>-340.228571</td>
+                                      <td>7059.800000</td>
+                                      <td>404.102857</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACET</th>
+                                      <td>2391.200000</td>
+                                      <td>31890.780952</td>
+                                      <td>-321.800000</td>
+                                      <td>-45.633333</td>
+                                      <td>-2517.780952</td>
+                                      <td>-672.457143</td>
+                                      <td>14724.695238</td>
+                                      <td>1031.910476</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU1</th>
+                                      <td>188.171429</td>
+                                      <td>-321.800000</td>
+                                      <td>50.885714</td>
+                                      <td>214.192857</td>
+                                      <td>-71.985714</td>
+                                      <td>-9.085714</td>
+                                      <td>1050.442857</td>
+                                      <td>-10.604286</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU2</th>
+                                      <td>448.928571</td>
+                                      <td>-45.633333</td>
+                                      <td>214.192857</td>
+                                      <td>1157.148095</td>
+                                      <td>-190.330952</td>
+                                      <td>-1.000000</td>
+                                      <td>6526.738095</td>
+                                      <td>-29.243095</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ISOP</th>
+                                      <td>-825.700000</td>
+                                      <td>-2517.780952</td>
+                                      <td>-71.985714</td>
+                                      <td>-190.330952</td>
+                                      <td>2886.495238</td>
+                                      <td>595.242857</td>
+                                      <td>-2045.123810</td>
+                                      <td>-91.217619</td>
+                                    </tr>
+                                    <tr>
+                                      <th>MEPR</th>
+                                      <td>-340.228571</td>
+                                      <td>-672.457143</td>
+                                      <td>-9.085714</td>
+                                      <td>-1.000000</td>
+                                      <td>595.242857</td>
+                                      <td>137.542857</td>
+                                      <td>-328.257143</td>
+                                      <td>-22.951429</td>
+                                    </tr>
+                                    <tr>
+                                      <th>PRO1</th>
+                                      <td>7059.800000</td>
+                                      <td>14724.695238</td>
+                                      <td>1050.442857</td>
+                                      <td>6526.738095</td>
+                                      <td>-2045.123810</td>
+                                      <td>-328.257143</td>
+                                      <td>46172.780952</td>
+                                      <td>481.791905</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACAL</th>
+                                      <td>404.102857</td>
+                                      <td>1031.910476</td>
+                                      <td>-10.604286</td>
+                                      <td>-29.243095</td>
+                                      <td>-91.217619</td>
+                                      <td>-22.951429</td>
+                                      <td>481.791905</td>
+                                      <td>62.555524</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <br />
+                                <tr>
+                                <h2 class="bg-info">Matrice covariance de la classe POIRE</h2>
+                                </tr>
+                                <table border="1" class="dataframe">
+                                  <thead>
+                                    <tr style="text-align: right;">
+                                      <th></th>
+                                      <th>MEOH</th>
+                                      <th>ACET</th>
+                                      <th>BU1</th>
+                                      <th>BU2</th>
+                                      <th>ISOP</th>
+                                      <th>MEPR</th>
+                                      <th>PRO1</th>
+                                      <th>ACAL</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th>MEOH</th>
+                                      <td>57971.713158</td>
+                                      <td>8464.592105</td>
+                                      <td>580.288947</td>
+                                      <td>-8558.555789</td>
+                                      <td>4840.402632</td>
+                                      <td>2229.473684</td>
+                                      <td>-41487.410526</td>
+                                      <td>842.901842</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACET</th>
+                                      <td>8464.592105</td>
+                                      <td>3412.934211</td>
+                                      <td>-61.665789</td>
+                                      <td>-243.226316</td>
+                                      <td>313.828947</td>
+                                      <td>351.473684</td>
+                                      <td>-1165.421053</td>
+                                      <td>140.164474</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU1</th>
+                                      <td>580.288947</td>
+                                      <td>-61.665789</td>
+                                      <td>55.399053</td>
+                                      <td>-102.995158</td>
+                                      <td>230.740526</td>
+                                      <td>60.821053</td>
+                                      <td>-219.823158</td>
+                                      <td>13.831211</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU2</th>
+                                      <td>-8558.555789</td>
+                                      <td>-243.226316</td>
+                                      <td>-102.995158</td>
+                                      <td>6046.579579</td>
+                                      <td>-1132.562105</td>
+                                      <td>-327.621053</td>
+                                      <td>45159.208421</td>
+                                      <td>-102.745368</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ISOP</th>
+                                      <td>4840.402632</td>
+                                      <td>313.828947</td>
+                                      <td>230.740526</td>
+                                      <td>-1132.562105</td>
+                                      <td>2134.471053</td>
+                                      <td>792.631579</td>
+                                      <td>-5651.284211</td>
+                                      <td>-13.836579</td>
+                                    </tr>
+                                    <tr>
+                                      <th>MEPR</th>
+                                      <td>2229.473684</td>
+                                      <td>351.473684</td>
+                                      <td>60.821053</td>
+                                      <td>-327.621053</td>
+                                      <td>792.631579</td>
+                                      <td>405.263158</td>
+                                      <td>-1513.947368</td>
+                                      <td>-10.705263</td>
+                                    </tr>
+                                    <tr>
+                                      <th>PRO1</th>
+                                      <td>-41487.410526</td>
+                                      <td>-1165.421053</td>
+                                      <td>-219.823158</td>
+                                      <td>45159.208421</td>
+                                      <td>-5651.284211</td>
+                                      <td>-1513.947368</td>
+                                      <td>370844.252632</td>
+                                      <td>-534.603158</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACAL</th>
+                                      <td>842.901842</td>
+                                      <td>140.164474</td>
+                                      <td>13.831211</td>
+                                      <td>-102.745368</td>
+                                      <td>-13.836579</td>
+                                      <td>-10.705263</td>
+                                      <td>-534.603158</td>
+                                      <td>45.228921</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <br />
+                                <tr>
+                                <h2 class="bg-info">Matrice de covariance totale</h2>
+                                </tr>
+                            <table border="1" class="dataframe">
+                                  <thead>
+                                    <tr style="text-align: right;">
+                                      <th></th>
+                                      <th>MEOH</th>
+                                      <th>ACET</th>
+                                      <th>BU1</th>
+                                      <th>BU2</th>
+                                      <th>ISOP</th>
+                                      <th>MEPR</th>
+                                      <th>PRO1</th>
+                                      <th>ACAL</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th>MEOH</th>
+                                      <td>136738.708428</td>
+                                      <td>6617.583880</td>
+                                      <td>3173.906712</td>
+                                      <td>372.960935</td>
+                                      <td>7655.131976</td>
+                                      <td>3593.549133</td>
+                                      <td>-65773.762010</td>
+                                      <td>1082.729148</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACET</th>
+                                      <td>6617.583880</td>
+                                      <td>14921.543661</td>
+                                      <td>-99.421071</td>
+                                      <td>-146.492066</td>
+                                      <td>74.836048</td>
+                                      <td>51.906735</td>
+                                      <td>12047.594167</td>
+                                      <td>427.863371</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU1</th>
+                                      <td>3173.906712</td>
+                                      <td>-99.421071</td>
+                                      <td>121.607692</td>
+                                      <td>85.720347</td>
+                                      <td>182.120211</td>
+                                      <td>79.107270</td>
+                                      <td>-2032.141765</td>
+                                      <td>10.528265</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU2</th>
+                                      <td>372.960935</td>
+                                      <td>-146.492066</td>
+                                      <td>85.720347</td>
+                                      <td>2968.665732</td>
+                                      <td>-178.398643</td>
+                                      <td>71.995083</td>
+                                      <td>22370.955686</td>
+                                      <td>-4.595913</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ISOP</th>
+                                      <td>7655.131976</td>
+                                      <td>74.836048</td>
+                                      <td>182.120211</td>
+                                      <td>-178.398643</td>
+                                      <td>2333.864253</td>
+                                      <td>754.028959</td>
+                                      <td>-3366.731373</td>
+                                      <td>32.959879</td>
+                                    </tr>
+                                    <tr>
+                                      <th>MEPR</th>
+                                      <td>3593.549133</td>
+                                      <td>51.906735</td>
+                                      <td>79.107270</td>
+                                      <td>71.995083</td>
+                                      <td>754.028959</td>
+                                      <td>341.198959</td>
+                                      <td>-731.993431</td>
+                                      <td>14.037722</td>
+                                    </tr>
+                                    <tr>
+                                      <th>PRO1</th>
+                                      <td>-65773.762010</td>
+                                      <td>12047.594167</td>
+                                      <td>-2032.141765</td>
+                                      <td>22370.955686</td>
+                                      <td>-3366.731373</td>
+                                      <td>-731.993431</td>
+                                      <td>392100.202304</td>
+                                      <td>626.809510</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACAL</th>
+                                      <td>1082.729148</td>
+                                      <td>427.863371</td>
+                                      <td>10.528265</td>
+                                      <td>-4.595913</td>
+                                      <td>32.959879</td>
+                                      <td>14.037722</td>
+                                      <td>626.809510</td>
+                                      <td>64.872504</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <br />
+                                    <tr>
+                                    <h2 class="bg-info">Matrice de covariance intra classe</h2>
+                                    </tr>
+                                <table border="1" class="dataframe">
+                                  <thead>
+                                    <tr style="text-align: right;">
+                                      <th></th>
+                                      <th>MEOH</th>
+                                      <th>ACET</th>
+                                      <th>BU1</th>
+                                      <th>BU2</th>
+                                      <th>ISOP</th>
+                                      <th>MEPR</th>
+                                      <th>PRO1</th>
+                                      <th>ACAL</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th>MEOH</th>
+                                      <td>40223.702461</td>
+                                      <td>7653.791777</td>
+                                      <td>299.526327</td>
+                                      <td>-2522.675774</td>
+                                      <td>3494.675210</td>
+                                      <td>1340.445258</td>
+                                      <td>7923.707923</td>
+                                      <td>833.681423</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACET</th>
+                                      <td>7653.791777</td>
+                                      <td>15093.472817</td>
+                                      <td>-110.066327</td>
+                                      <td>148.729756</td>
+                                      <td>293.413065</td>
+                                      <td>223.269220</td>
+                                      <td>14043.416983</td>
+                                      <td>462.680778</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU1</th>
+                                      <td>299.526327</td>
+                                      <td>-110.066327</td>
+                                      <td>36.221265</td>
+                                      <td>22.438000</td>
+                                      <td>70.236122</td>
+                                      <td>21.940816</td>
+                                      <td>272.533878</td>
+                                      <td>3.353327</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU2</th>
+                                      <td>-2522.675774</td>
+                                      <td>148.729756</td>
+                                      <td>22.438000</td>
+                                      <td>2825.927144</td>
+                                      <td>-431.046731</td>
+                                      <td>-91.429556</td>
+                                      <td>24116.532085</td>
+                                      <td>-22.957528</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ISOP</th>
+                                      <td>3494.675210</td>
+                                      <td>293.413065</td>
+                                      <td>70.236122</td>
+                                      <td>-431.046731</td>
+                                      <td>2156.408183</td>
+                                      <td>615.874670</td>
+                                      <td>-1034.013045</td>
+                                      <td>15.066136</td>
+                                    </tr>
+                                    <tr>
+                                      <th>MEPR</th>
+                                      <td>1340.445258</td>
+                                      <td>223.269220</td>
+                                      <td>21.940816</td>
+                                      <td>-91.429556</td>
+                                      <td>615.874670</td>
+                                      <td>245.694886</td>
+                                      <td>305.218511</td>
+                                      <td>2.405330</td>
+                                    </tr>
+                                    <tr>
+                                      <th>PRO1</th>
+                                      <td>7923.707923</td>
+                                      <td>14043.416983</td>
+                                      <td>272.533878</td>
+                                      <td>24116.532085</td>
+                                      <td>-1034.013045</td>
+                                      <td>305.218511</td>
+                                      <td>340956.952013</td>
+                                      <td>798.808215</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACAL</th>
+                                      <td>833.681423</td>
+                                      <td>462.680778</td>
+                                      <td>3.353327</td>
+                                      <td>-22.957528</td>
+                                      <td>15.066136</td>
+                                      <td>2.405330</td>
+                                      <td>798.808215</td>
+                                      <td>66.145806</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <br />
+                                <tr>
+                                <h2 class="bg-info">Matrice de covariance intra-classe biaisé</h2>
+                                </tr>
+                                <table border="1" class="dataframe">
+                                  <thead>
+                                    <tr style="text-align: right;">
+                                      <th></th>
+                                      <th>MEOH</th>
+                                      <th>ACET</th>
+                                      <th>BU1</th>
+                                      <th>BU2</th>
+                                      <th>ISOP</th>
+                                      <th>MEPR</th>
+                                      <th>PRO1</th>
+                                      <th>ACAL</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th>MEOH</th>
+                                      <td>37903.104242</td>
+                                      <td>7212.226867</td>
+                                      <td>282.245962</td>
+                                      <td>-2377.136787</td>
+                                      <td>3293.059333</td>
+                                      <td>1263.111878</td>
+                                      <td>7466.570928</td>
+                                      <td>785.584417</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACET</th>
+                                      <td>7212.226867</td>
+                                      <td>14222.695539</td>
+                                      <td>-103.716346</td>
+                                      <td>140.149193</td>
+                                      <td>276.485388</td>
+                                      <td>210.388303</td>
+                                      <td>13233.219849</td>
+                                      <td>435.987656</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU1</th>
+                                      <td>282.245962</td>
+                                      <td>-103.716346</td>
+                                      <td>34.131577</td>
+                                      <td>21.143500</td>
+                                      <td>66.184038</td>
+                                      <td>20.675000</td>
+                                      <td>256.810769</td>
+                                      <td>3.159865</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU2</th>
+                                      <td>-2377.136787</td>
+                                      <td>140.149193</td>
+                                      <td>21.143500</td>
+                                      <td>2662.892885</td>
+                                      <td>-406.178650</td>
+                                      <td>-86.154774</td>
+                                      <td>22725.193695</td>
+                                      <td>-21.633055</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ISOP</th>
+                                      <td>3293.059333</td>
+                                      <td>276.485388</td>
+                                      <td>66.184038</td>
+                                      <td>-406.178650</td>
+                                      <td>2032.000019</td>
+                                      <td>580.343439</td>
+                                      <td>-974.358446</td>
+                                      <td>14.196936</td>
+                                    </tr>
+                                    <tr>
+                                      <th>MEPR</th>
+                                      <td>1263.111878</td>
+                                      <td>210.388303</td>
+                                      <td>20.675000</td>
+                                      <td>-86.154774</td>
+                                      <td>580.343439</td>
+                                      <td>231.520181</td>
+                                      <td>287.609751</td>
+                                      <td>2.266561</td>
+                                    </tr>
+                                    <tr>
+                                      <th>PRO1</th>
+                                      <td>7466.570928</td>
+                                      <td>13233.219849</td>
+                                      <td>256.810769</td>
+                                      <td>22725.193695</td>
+                                      <td>-974.358446</td>
+                                      <td>287.609751</td>
+                                      <td>321286.358627</td>
+                                      <td>752.723126</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACAL</th>
+                                      <td>785.584417</td>
+                                      <td>435.987656</td>
+                                      <td>3.159865</td>
+                                      <td>-21.633055</td>
+                                      <td>14.196936</td>
+                                      <td>2.266561</td>
+                                      <td>752.723126</td>
+                                      <td>62.329702</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <br />
+                                <tr>
+                                <h2 class="bg-info">Inverse Matrice de covariance intra-classes</h2>
+                                </tr>
+                                <table border="1" class="dataframe">
+                                      <thead>
+                                        <tr style="text-align: right;">
+                                          <th></th>
+                                          <th>MEOH</th>
+                                          <th>ACET</th>
+                                          <th>BU1</th>
+                                          <th>BU2</th>
+                                          <th>ISOP</th>
+                                          <th>MEPR</th>
+                                          <th>PRO1</th>
+                                          <th>ACAL</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <th>MEOH</th>
+                                          <td>0.000052</td>
+                                          <td>-0.000006</td>
+                                          <td>-0.000289</td>
+                                          <td>0.000083</td>
+                                          <td>1.286527e-05</td>
+                                          <td>-0.000240</td>
+                                          <td>-5.175614e-06</td>
+                                          <td>-0.000498</td>
+                                        </tr>
+                                        <tr>
+                                          <th>ACET</th>
+                                          <td>-0.000006</td>
+                                          <td>0.000095</td>
+                                          <td>0.000441</td>
+                                          <td>0.000008</td>
+                                          <td>3.334750e-05</td>
+                                          <td>-0.000166</td>
+                                          <td>-3.060095e-06</td>
+                                          <td>-0.000574</td>
+                                        </tr>
+                                        <tr>
+                                          <th>BU1</th>
+                                          <td>-0.000289</td>
+                                          <td>0.000441</td>
+                                          <td>0.033502</td>
+                                          <td>-0.000947</td>
+                                          <td>-7.762110e-04</td>
+                                          <td>-0.000245</td>
+                                          <td>3.051027e-05</td>
+                                          <td>-0.001654</td>
+                                        </tr>
+                                        <tr>
+                                          <th>BU2</th>
+                                          <td>0.000083</td>
+                                          <td>0.000008</td>
+                                          <td>-0.000947</td>
+                                          <td>0.001182</td>
+                                          <td>1.420886e-04</td>
+                                          <td>-0.000189</td>
+                                          <td>-8.531588e-05</td>
+                                          <td>0.000365</td>
+                                        </tr>
+                                        <tr>
+                                          <th>ISOP</th>
+                                          <td>0.000013</td>
+                                          <td>0.000033</td>
+                                          <td>-0.000776</td>
+                                          <td>0.000142</td>
+                                          <td>1.715551e-03</td>
+                                          <td>-0.004272</td>
+                                          <td>-8.282882e-07</td>
+                                          <td>-0.000532</td>
+                                        </tr>
+                                        <tr>
+                                          <th>MEPR</th>
+                                          <td>-0.000240</td>
+                                          <td>-0.000166</td>
+                                          <td>-0.000245</td>
+                                          <td>-0.000189</td>
+                                          <td>-4.272374e-03</td>
+                                          <td>0.016162</td>
+                                          <td>-1.241638e-05</td>
+                                          <td>0.004669</td>
+                                        </tr>
+                                        <tr>
+                                          <th>PRO1</th>
+                                          <td>-0.000005</td>
+                                          <td>-0.000003</td>
+                                          <td>0.000031</td>
+                                          <td>-0.000085</td>
+                                          <td>-8.282882e-07</td>
+                                          <td>-0.000012</td>
+                                          <td>9.330523e-06</td>
+                                          <td>-0.000057</td>
+                                        </tr>
+                                        <tr>
+                                          <th>ACAL</th>
+                                          <td>-0.000498</td>
+                                          <td>-0.000574</td>
+                                          <td>-0.001654</td>
+                                          <td>0.000365</td>
+                                          <td>-5.321351e-04</td>
+                                          <td>0.004669</td>
+                                          <td>-5.656059e-05</td>
+                                          <td>0.026254</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                    <br />
+                                <tr>
+                                <h2 class="bg-info">Classification des fonctions</h2>
+                                </tr>
+                            <table border="1" class="dataframe">
+                                  <thead>
+                                    <tr style="text-align: right;">
+                                      <th></th>
+                                      <th>KIRSCH</th>
+                                      <th>MIRAB</th>
+                                      <th>POIRE</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th>MEOH</th>
+                                      <td>0.003428</td>
+                                      <td>0.029028</td>
+                                      <td>0.033390</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACET</th>
+                                      <td>0.006390</td>
+                                      <td>0.016413</td>
+                                      <td>0.007513</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU1</th>
+                                      <td>-0.063681</td>
+                                      <td>0.405390</td>
+                                      <td>0.318047</td>
+                                    </tr>
+                                    <tr>
+                                      <th>BU2</th>
+                                      <td>-0.000883</td>
+                                      <td>0.071352</td>
+                                      <td>0.114993</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ISOP</th>
+                                      <td>0.023082</td>
+                                      <td>0.029763</td>
+                                      <td>-0.008486</td>
+                                    </tr>
+                                    <tr>
+                                      <th>MEPR</th>
+                                      <td>0.037494</td>
+                                      <td>-0.128942</td>
+                                      <td>0.061780</td>
+                                    </tr>
+                                    <tr>
+                                      <th>PRO1</th>
+                                      <td>0.001971</td>
+                                      <td>-0.005413</td>
+                                      <td>-0.008318</td>
+                                    </tr>
+                                    <tr>
+                                      <th>ACAL</th>
+                                      <td>0.066184</td>
+                                      <td>-0.226424</td>
+                                      <td>-0.130332</td>
+                                    </tr>
+                                    <tr>
+                                      <th>Constante</th>
+                                      <td>-4.853934</td>
+                                      <td>-18.715522</td>
+                                      <td>-25.052561</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <br />
+                                <hr />
+                                <br />
                         </div>
+                    <h1 class="text-center">Fonction predict()</h1>
+                        <div class="row justify-content-md-center">
+                            <div class='col-8'>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th class="bg-info">Taille d'échantillon totale</th>
+                                        <td>50</td>
+                                        <th class="bg-info">Variable dans l'analyse</th>
+                                        <td>8<td>
+                                    </tr>
+                                </table>
+                                    <tr>
+                                        <h2 class="bg-info">Scores</h2>
+                                    </tr>
+                                <table border="1" class="dataframe">
+                                  <thead>
+                                    <tr style="text-align: right;">
+                                      <th></th>
+                                      <th>KIRSCH</th>
+                                      <th>MIRAB</th>
+                                      <th>POIRE</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th>0</th>
+                                      <td>-2.956290</td>
+                                      <td>-20.985455</td>
+                                      <td>-24.930976</td>
+                                    </tr>
+                                    <tr>
+                                      <th>1</th>
+                                      <td>3.594817</td>
+                                      <td>-7.851348</td>
+                                      <td>-11.777182</td>
+                                    </tr>
+                                    <tr>
+                                      <th>2</th>
+                                      <td>-1.547107</td>
+                                      <td>-14.395457</td>
+                                      <td>-19.632425</td>
+                                    </tr>
+                                    <tr>
+                                      <th>3</th>
+                                      <td>4.273531</td>
+                                      <td>-7.561232</td>
+                                      <td>-12.934969</td>
+                                    </tr>
+                                    <tr>
+                                      <th>4</th>
+                                      <td>4.941338</td>
+                                      <td>-4.195620</td>
+                                      <td>-6.038436</td>
+                                    </tr>
+                                    <tr>
+                                      <th>5</th>
+                                      <td>-3.520660</td>
+                                      <td>-21.421866</td>
+                                      <td>-26.559102</td>
+                                    </tr>
+                                    <tr>
+                                      <th>6</th>
+                                      <td>2.322830</td>
+                                      <td>-11.518781</td>
+                                      <td>-12.758294</td>
+                                    </tr>
+                                    <tr>
+                                      <th>7</th>
+                                      <td>10.354712</td>
+                                      <td>-16.788897</td>
+                                      <td>-11.283254</td>
+                                    </tr>
+                                    <tr>
+                                      <th>8</th>
+                                      <td>-1.864104</td>
+                                      <td>-15.221688</td>
+                                      <td>-20.474912</td>
+                                    </tr>
+                                    <tr>
+                                      <th>9</th>
+                                      <td>6.662852</td>
+                                      <td>-6.585735</td>
+                                      <td>-8.564267</td>
+                                    </tr>
+                                    <tr>
+                                      <th>10</th>
+                                      <td>3.424095</td>
+                                      <td>-8.440436</td>
+                                      <td>-14.448508</td>
+                                    </tr>
+                                    <tr>
+                                      <th>11</th>
+                                      <td>4.648061</td>
+                                      <td>-3.598984</td>
+                                      <td>-8.180938</td>
+                                    </tr>
+                                    <tr>
+                                      <th>12</th>
+                                      <td>0.955338</td>
+                                      <td>-10.777906</td>
+                                      <td>-13.401871</td>
+                                    </tr>
+                                    <tr>
+                                      <th>13</th>
+                                      <td>7.699146</td>
+                                      <td>-6.407552</td>
+                                      <td>-11.466753</td>
+                                    </tr>
+                                    <tr>
+                                      <th>14</th>
+                                      <td>2.424849</td>
+                                      <td>14.878425</td>
+                                      <td>15.270387</td>
+                                    </tr>
+                                    <tr>
+                                      <th>15</th>
+                                      <td>1.542294</td>
+                                      <td>8.555075</td>
+                                      <td>6.536755</td>
+                                    </tr>
+                                    <tr>
+                                      <th>16</th>
+                                      <td>3.671650</td>
+                                      <td>6.423540</td>
+                                      <td>3.802454</td>
+                                    </tr>
+                                    <tr>
+                                      <th>17</th>
+                                      <td>3.062325</td>
+                                      <td>19.821952</td>
+                                      <td>16.532534</td>
+                                    </tr>
+                                    <tr>
+                                      <th>18</th>
+                                      <td>5.696782</td>
+                                      <td>13.339368</td>
+                                      <td>9.288817</td>
+                                    </tr>
+                                    <tr>
+                                      <th>19</th>
+                                      <td>4.495361</td>
+                                      <td>25.316103</td>
+                                      <td>23.449774</td>
+                                    </tr>
+                                    <tr>
+                                      <th>20</th>
+                                      <td>1.686280</td>
+                                      <td>19.288224</td>
+                                      <td>14.673843</td>
+                                    </tr>
+                                    <tr>
+                                      <th>21</th>
+                                      <td>4.509688</td>
+                                      <td>11.347514</td>
+                                      <td>10.820264</td>
+                                    </tr>
+                                    <tr>
+                                      <th>22</th>
+                                      <td>4.572958</td>
+                                      <td>24.998328</td>
+                                      <td>19.216077</td>
+                                    </tr>
+                                    <tr>
+                                      <th>23</th>
+                                      <td>5.276893</td>
+                                      <td>21.559083</td>
+                                      <td>16.303271</td>
+                                    </tr>
+                                    <tr>
+                                      <th>24</th>
+                                      <td>1.165126</td>
+                                      <td>11.422764</td>
+                                      <td>10.207151</td>
+                                    </tr>
+                                    <tr>
+                                      <th>25</th>
+                                      <td>3.741189</td>
+                                      <td>21.043336</td>
+                                      <td>17.450524</td>
+                                    </tr>
+                                    <tr>
+                                      <th>26</th>
+                                      <td>0.872821</td>
+                                      <td>4.264257</td>
+                                      <td>-0.694219</td>
+                                    </tr>
+                                    <tr>
+                                      <th>27</th>
+                                      <td>4.615883</td>
+                                      <td>24.870088</td>
+                                      <td>28.248647</td>
+                                    </tr>
+                                    <tr>
+                                      <th>28</th>
+                                      <td>1.819675</td>
+                                      <td>17.944877</td>
+                                      <td>16.037422</td>
+                                    </tr>
+                                    <tr>
+                                      <th>29</th>
+                                      <td>4.250772</td>
+                                      <td>22.578350</td>
+                                      <td>20.598300</td>
+                                    </tr>
+                                    <tr>
+                                      <th>30</th>
+                                      <td>6.233380</td>
+                                      <td>8.724707</td>
+                                      <td>13.067392</td>
+                                    </tr>
+                                    <tr>
+                                      <th>31</th>
+                                      <td>0.311927</td>
+                                      <td>0.972004</td>
+                                      <td>-1.795535</td>
+                                    </tr>
+                                    <tr>
+                                      <th>32</th>
+                                      <td>6.657195</td>
+                                      <td>14.019045</td>
+                                      <td>8.061309</td>
+                                    </tr>
+                                    <tr>
+                                      <th>33</th>
+                                      <td>4.273870</td>
+                                      <td>19.679990</td>
+                                      <td>18.496504</td>
+                                    </tr>
+                                    <tr>
+                                      <th>34</th>
+                                      <td>3.228404</td>
+                                      <td>17.765649</td>
+                                      <td>18.449450</td>
+                                    </tr>
+                                    <tr>
+                                      <th>35</th>
+                                      <td>3.979405</td>
+                                      <td>-9.811155</td>
+                                      <td>-9.027715</td>
+                                    </tr>
+                                    <tr>
+                                      <th>36</th>
+                                      <td>11.658254</td>
+                                      <td>24.672456</td>
+                                      <td>38.213059</td>
+                                    </tr>
+                                    <tr>
+                                      <th>37</th>
+                                      <td>6.529923</td>
+                                      <td>17.599426</td>
+                                      <td>25.183354</td>
+                                    </tr>
+                                    <tr>
+                                      <th>38</th>
+                                      <td>1.322640</td>
+                                      <td>5.705673</td>
+                                      <td>3.301734</td>
+                                    </tr>
+                                    <tr>
+                                      <th>39</th>
+                                      <td>0.903276</td>
+                                      <td>14.316852</td>
+                                      <td>14.502946</td>
+                                    </tr>
+                                    <tr>
+                                      <th>40</th>
+                                      <td>6.134954</td>
+                                      <td>44.777487</td>
+                                      <td>54.659597</td>
+                                    </tr>
+                                    <tr>
+                                      <th>41</th>
+                                      <td>4.133198</td>
+                                      <td>25.935237</td>
+                                      <td>28.366569</td>
+                                    </tr>
+                                    <tr>
+                                      <th>42</th>
+                                      <td>5.943889</td>
+                                      <td>18.170800</td>
+                                      <td>23.322349</td>
+                                    </tr>
+                                    <tr>
+                                      <th>43</th>
+                                      <td>9.353945</td>
+                                      <td>7.795341</td>
+                                      <td>15.953675</td>
+                                    </tr>
+                                    <tr>
+                                      <th>44</th>
+                                      <td>6.120606</td>
+                                      <td>25.457301</td>
+                                      <td>29.341648</td>
+                                    </tr>
+                                    <tr>
+                                      <th>45</th>
+                                      <td>4.032151</td>
+                                      <td>8.175185</td>
+                                      <td>8.163435</td>
+                                    </tr>
+                                    <tr>
+                                      <th>46</th>
+                                      <td>6.424997</td>
+                                      <td>20.211105</td>
+                                      <td>28.759480</td>
+                                    </tr>
+                                    <tr>
+                                      <th>47</th>
+                                      <td>-0.225662</td>
+                                      <td>5.013913</td>
+                                      <td>2.733781</td>
+                                    </tr>
+                                    <tr>
+                                      <th>48</th>
+                                      <td>4.956342</td>
+                                      <td>18.744082</td>
+                                      <td>22.516847</td>
+                                    </tr>
+                                    <tr>
+                                      <th>49</th>
+                                      <td>4.746906</td>
+                                      <td>29.091457</td>
+                                      <td>32.732335</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <br />
+                                <tr>
+                                        <h2 class="bg-info">Prédiction des classes</h2>
+                                    <br />
+                                    <tr>
+                                    <th>'KIRSCH', 'KIRSCH', 'KIRSCH', 'KIRSCH', 'KIRSCH', 'KIRSCH', 'KIRSCH', 'KIRSCH', 'KIRSCH', 'KIRSCH', 'KIRSCH', 'KIRSCH', 'KIRSCH', 'KIRSCH', 'POIRE', 'MIRAB', 'MIRAB', 'MIRAB', 'MIRAB', 'MIRAB', 'MIRAB', 'MIRAB', 'MIRAB', 'MIRAB', 'MIRAB', 'MIRAB', 'MIRAB', 'POIRE', 'MIRAB', 'MIRAB', 'POIRE', 'MIRAB', 'MIRAB', 'MIRAB', 'POIRE', 'KIRSCH', 'POIRE', 'POIRE', 'MIRAB', 'POIRE', 'POIRE', 'POIRE', 'POIRE', 'POIRE', 'POIRE', 'MIRAB', 'POIRE', 'MIRAB', 'POIRE', 'POIRE'</th>
+                                    </tr>
+                            </div>
+                        </div>
+                        <br />
+                        <hr />
+                        <h1 class="text-center">Fonction stepdisc()</h1>
+                            <div class="row justify-content-md-center">
+                                <div class='col-8'>
+                                    <table class="table table-bordered">
+                                    <br />
+                                    <tr>
+                                    <h2 class="bg-info">Information de base : </h2>
+                                    </tr>
+                                        <tr>
+                                            <th class="bg-info">Taille d'échantillon totale</th>
+                                            <td>52</td>
+                                            <th class="bg-info">Variable dans l'analyse</th>
+                                            <td>8<td>                                        
+                                        </tr>
+                                        <tr>
+                                        <th class="bg-info">Niveau des classes</th>
+                                        <td>3</td>
+                                        <th class="bg-info">Une ou des variables seront inclusesDDL dans les classes</th>
+                                        <td>0</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="bg-info"></th>
+                                        <td></td>
+                                        <th class="bg-info">Niveau de signicativité</th>
+                                        <td>0.001</td>
+                                    </tr>
+                                </table>
+                                <br />
+                                    <tr>
+                                    <h2 class="bg-info">Information au niveau des classes : </h2>
+                                    </tr>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th class="bg-info">Type</th>
+                                        <th class="bg-info">Nom de la variable</th>
+                                        <th class="bg-info">Fréquence</th>
+                                        <th class="bg-info">Poids</th>
+                                        <th class="bg-info">Proportion</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="bg-info">KIRSCH</th>
+                                        <th class="bg-info">KIRSCH</th>
+                                        <th class="bg-info">17</th>
+                                        <th class="bg-info">17.000</th>
+                                        <th class="bg-info">0.326923</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="bg-info">MIRAB</th>
+                                        <th class="bg-info">MIRAB</th>
+                                        <th class="bg-info">15</th>
+                                        <th class="bg-info">15.000</th>
+                                        <th class="bg-info">0.288462</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="bg-info">POIRE</th>
+                                        <th class="bg-info">POIRE</th>
+                                        <th class="bg-info">20</th>
+                                        <th class="bg-info">20.000</th>
+                                        <th class="bg-info">0.384615</th>
+                                    </tr>
+                            </table>
+                            </div>
                     </div>
                 </br>
         </html>
 """
     with open("file.html", "w") as file:
         file.write(html_content)
+    
